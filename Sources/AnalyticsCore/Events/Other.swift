@@ -1,4 +1,4 @@
-struct Other: AnalyticsEvent {
+public struct Other: AnalyticsEvent {
 
     var title: String
     var name: String { "\(title)" }

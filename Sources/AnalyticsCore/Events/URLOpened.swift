@@ -1,6 +1,6 @@
 import Foundation
 
-struct URLOpened: AnalyticsEvent {
+public struct URLOpened: AnalyticsEvent {
 
     var url: URL
 
