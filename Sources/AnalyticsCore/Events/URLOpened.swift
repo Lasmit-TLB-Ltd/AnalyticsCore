@@ -2,12 +2,14 @@ import Foundation
 
 public struct URLOpened: AnalyticsEvent {
 
-    var url: URL
-
-    var name: String { "Visit URL" }
-
-    var properties: [String : Any]? {
+    public var url: URL
+    public var name: String { "Visit URL" }
+    public var properties: [String : Any]? {
         ["url": url.description]
+    }
+    
+    public init(url: URL) {
+        self.url = url
     }
 }
 

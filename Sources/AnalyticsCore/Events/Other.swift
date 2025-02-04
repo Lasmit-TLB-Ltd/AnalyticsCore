@@ -1,7 +1,12 @@
 public struct Other: AnalyticsEvent {
 
-    var title: String
-    var name: String { "\(title)" }
+    public var title: String
+    public var name: String { "\(title)" }
 
-    var properties: [String : Any]?
+    public var properties: [String : Any]?
+    
+    public init(title: String, properties: [String : Any]? = nil) {
+        self.title = title
+        self.properties = properties
+    }
 }
