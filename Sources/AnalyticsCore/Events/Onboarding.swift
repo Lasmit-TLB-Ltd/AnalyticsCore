@@ -7,14 +7,18 @@
 //
 import Foundation
 
-struct Onboarding: AnalyticsEvent {
-    
-    var properties: [String : Any]? { return nil }
-    
-    var step: String
-    
-    var name: String {
+public struct Onboarding: AnalyticsEvent {
+
+    public var properties: [String : Any]? { return nil }
+
+    public var step: String
+
+    public var name: String {
         return "[Onboarding] \(step)"
     }
-  
+
+    public init(step: String) {
+        self.step = step
+    }
+
 }

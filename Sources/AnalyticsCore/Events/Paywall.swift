@@ -1,7 +1,6 @@
+public struct Paywall: AnalyticsEvent {
 
-struct Paywall: AnalyticsEvent {
-
-    enum PurchaseEventType {
+    public enum PurchaseEventType {
         case showSalesScreen
         case purchaseStarted
         case purchaseCompleted
@@ -9,11 +8,11 @@ struct Paywall: AnalyticsEvent {
         case restore
     }
 
-    var type: PurchaseEventType
-    var source: String?
-    var period: String?
+    public var type: PurchaseEventType
+    public var source: String?
+    public var period: String?
 
-    var name: String {
+    public var name: String {
         let prefix = "[Paywall] "
         var suffix: String
         switch type {
@@ -27,7 +26,7 @@ struct Paywall: AnalyticsEvent {
         return prefix + suffix
     }
 
-    var properties: [String : Any]? {
+    public var properties: [String : Any]? {
         var props = ["source": source ?? "--" ]
 
         if type == .purchaseCompleted {
@@ -37,5 +36,11 @@ struct Paywall: AnalyticsEvent {
         }
 
         return props
+    }
+
+    public init(type: PurchaseEventType, source: String? = nil, period: String? = nil) {
+        self.type = type
+        self.source = source
+        self.period = period
     }
 }

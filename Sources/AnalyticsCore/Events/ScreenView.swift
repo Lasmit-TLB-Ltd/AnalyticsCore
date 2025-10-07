@@ -1,5 +1,8 @@
+public struct ScreenView: AnalyticsEvent {
+    public var properties: [String: Any]? = nil
+    public var name: String
 
-struct ScreenView: AnalyticsEvent {
-    var properties: [String: Any]? = nil
-    var name: String
+    public init(name: String) {
+        self.name = name
+    }
 }
