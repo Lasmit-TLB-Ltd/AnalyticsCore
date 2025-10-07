@@ -2,6 +2,12 @@ import AmplitudeSwift
 import os
 import CocoaLumberjackSwift
 
+#if canImport(UIKit)
+import UIKit
+#elseif canImport(WatchKit)
+import WatchKit
+#endif
+
 /// A simple, consistent way to track analytics use between apps.
 /// Focussed on key events like onboarding and paywall interaction.
 /// As well as screen views.
@@ -17,6 +23,24 @@ public class AnalyticsManager {
             serverZone: .EU,
             autocapture: .screenViews
         ))
+
+        setOSVersionProperty()
+    }
+
+    private static func setOSVersionProperty() {
+        #if os(iOS)
+        let version = UIDevice.current.systemVersion
+        let majorVersion = Int(version.split(separator: ".").first ?? "0") ?? 0
+        if majorVersion > 0 {
+            setUserProperty(SystemUserProperty.osVersion(majorVersion))
+        }
+        #elseif os(watchOS)
+        let version = WKInterfaceDevice.current().systemVersion
+        let majorVersion = Int(version.split(separator: ".").first ?? "0") ?? 0
+        if majorVersion > 0 {
+            setUserProperty(SystemUserProperty.osVersion(majorVersion))
+        }
+        #endif
     }
     
     public static func logEvent(_ event: AnalyticsEvent) {
@@ -24,13 +48,18 @@ public class AnalyticsManager {
             DDLogError("Amplitude not configured")
             return
         }
-        
+
         var propertiesDescription = ""
 
         if let props = event.properties, props.count > 0 {
             propertiesDescription = props.description
         }
-        DDLogDebug("[📍] \(event.name) \(propertiesDescription)")
+
+        if event is ErrorEvent {
+            DDLogError("📍 \(event.name) \(propertiesDescription)")
+        } else {
+            DDLogInfo("📍 \(event.name) \(propertiesDescription)")
+        }
 
         let props = event.properties ?? [String: Any]()
 
@@ -41,7 +70,7 @@ public class AnalyticsManager {
 
 #if !os(watchOS)
         if let paywallEvent = event as? Paywall, paywallEvent.source == nil {
-            DDLogWarn("[📍⚠️] Unknown Paywall Event Source")
+            DDLogWarn("📍 Unknown Paywall Event Source")
         }
 #endif
         flush()

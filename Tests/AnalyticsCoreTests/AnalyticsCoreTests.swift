@@ -1,6 +1,16 @@
 import Testing
 @testable import AnalyticsCore
 
-@Test func example() async throws {
-    // Write your test here and use APIs like `#expect(...)` to check expected conditions.
+@Test func testOSVersionUserProperty() async throws {
+    let property = SystemUserProperty.osVersion(18)
+
+    #expect(property.name == "os_version_major")
+    #expect(property.value as? Int == 18)
+}
+
+@Test func testOSVersionUserPropertyWithDifferentVersion() async throws {
+    let property = SystemUserProperty.osVersion(17)
+
+    #expect(property.name == "os_version_major")
+    #expect(property.value as? Int == 17)
 }
