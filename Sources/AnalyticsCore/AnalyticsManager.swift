@@ -47,17 +47,35 @@ public class AnalyticsManager {
         flush()
     }
     
+    public static func identify(userId: String) {
+        guard let amplitude else {
+            DDLogError("Amplitude not configured")
+            return
+        }
+
+        amplitude.setUserId(userId: userId)
+        DDLogDebug("[📍] User identified: \(userId)")
+    }
+
     public static func setUserProperty(_ property: AnalyticsUserProperty) {
         guard let amplitude else {
             DDLogError("Amplitude not configured")
             return
         }
-        
+
         let identify = Identify()
         identify.set(property: property.name, value: property.value)
         amplitude.identify(identify: identify)
     }
-    
+
+    public static func startExperiment(name: String, variant: String) {
+        // Track the experiment event
+        logEvent(Experiment(name: name, variant: variant))
+
+        // Set the experiment as a user property
+        setUserProperty(ExperimentUserProperty(name: name, variant: variant))
+    }
+
     private static func flush() {
 #if DEBUG
         guard let amplitude else {
