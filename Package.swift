@@ -7,7 +7,8 @@ let package = Package(
     name: "AnalyticsCore",
     platforms: [
            .iOS(.v15),
-           .watchOS(.v9)
+           .watchOS(.v9),
+           .macOS(.v10_15)
        ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
