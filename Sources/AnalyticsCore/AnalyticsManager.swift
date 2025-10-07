@@ -14,6 +14,7 @@ public class AnalyticsManager {
     public static func setup(apiKey: String) {
         Self.amplitude = Amplitude(configuration: Configuration(
             apiKey: apiKey,
+            serverZone: .EU,
             autocapture: .screenViews
         ))
     }
