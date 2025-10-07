@@ -2,7 +2,11 @@ import AmplitudeSwift
 import os
 import CocoaLumberjackSwift
 
-
+/// A simple, consistent way to track analytics use between apps.
+/// Focussed on key events like onboarding and paywall interaction.
+/// As well as screen views.
+/// The goal is to avoid analytics bloat and focus on things which move the needle.
+/// This keeps complexity and costs down.
 public class AnalyticsManager {
     
     nonisolated(unsafe) private static var amplitude: Amplitude?
@@ -35,8 +39,8 @@ public class AnalyticsManager {
         )
 
 #if !os(watchOS)
-        if let purchaseEvent = event as? Purchase, purchaseEvent.source == nil {
-            DDLogWarn("[📍⚠️] Unknown Purchase Event Source")
+        if let paywallEvent = event as? Paywall, paywallEvent.source == nil {
+            DDLogWarn("[📍⚠️] Unknown Paywall Event Source")
         }
 #endif
         flush()

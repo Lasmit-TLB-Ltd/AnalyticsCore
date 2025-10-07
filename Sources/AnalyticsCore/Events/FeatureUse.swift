@@ -1,4 +1,4 @@
-public struct Other: AnalyticsEvent {
+public struct FeatureUse: AnalyticsEvent {
 
     public var title: String
     public var name: String { "\(title)" }
