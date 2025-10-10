@@ -110,6 +110,30 @@ public class AnalyticsManager {
         setUserProperty(ExperimentUserProperty(name: name, variant: variant))
     }
 
+    /// Creates an experiment and automatically tracks it
+    ///
+    /// This is the recommended way to start an experiment as it ensures the experiment
+    /// instance and tracking are always in sync.
+    ///
+    /// ```swift
+    /// enum MyExperiments: String {
+    ///     case newFeature
+    /// }
+    ///
+    /// let experiment = AnalyticsManager.createExperiment(name: MyExperiments.newFeature)
+    /// if experiment.doNewThing {
+    ///     // Use new feature
+    /// }
+    /// ```
+    ///
+    /// - Parameter name: The experiment name
+    /// - Returns: The created experiment instance
+    public static func createExperiment<Name: RawRepresentable>(name: Name) -> Experiment<Name> where Name.RawValue == String {
+        let experiment = Experiment(name: name)
+        startExperiment(name: experiment.name.rawValue, variant: experiment.variant.rawValue)
+        return experiment
+    }
+
     private static func flush() {
 #if DEBUG
         guard let amplitude else {

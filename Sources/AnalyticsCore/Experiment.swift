@@ -14,6 +14,8 @@ import Foundation
 ///
 /// ## Usage Example
 ///
+/// **Recommended**: Use `AnalyticsManager.createExperiment()` to create and track atomically:
+///
 /// ```swift
 /// // 1. Define your experiment names
 /// enum MyExperiments: String {
@@ -21,23 +23,28 @@ import Foundation
 ///     case alternativePaywallDesign
 /// }
 ///
-/// // 2. Create an experiment instance
-/// let onboardingExperiment = Experiment(name: MyExperiments.newOnboardingFlow)
+/// // 2. Create and track the experiment in one call
+/// let experiment = AnalyticsManager.createExperiment(name: MyExperiments.newOnboardingFlow)
 ///
-/// // 3. Track the experiment start (logs event and sets user property)
-/// AnalyticsManager.startExperiment(
-///     name: onboardingExperiment.name.rawValue,
-///     variant: onboardingExperiment.variant.rawValue
-/// )
-///
-/// // 4. Branch your code based on the variant
-/// if onboardingExperiment.doNewThing {
+/// // 3. Branch your code based on the variant
+/// if experiment.doNewThing {
 ///     // Show new onboarding flow (change variant)
 ///     showNewOnboarding()
 /// } else {
 ///     // Show existing onboarding (control variant)
 ///     showExistingOnboarding()
 /// }
+/// ```
+///
+/// **Alternative**: Manual creation and tracking:
+///
+/// ```swift
+/// let experiment = Experiment(name: MyExperiments.newOnboardingFlow)
+/// AnalyticsManager.startExperiment(
+///     name: experiment.name.rawValue,
+///     variant: experiment.variant.rawValue
+/// )
+/// if experiment.doNewThing { /* ... */ }
 /// ```
 ///
 /// ## Behavior
@@ -85,16 +92,14 @@ public struct Experiment<Name: RawRepresentable> where Name.RawValue == String {
 
     /// Creates an experiment with optional variant override
     ///
-    /// **Testing initializer** - Use this when you need to test specific variants.
+    /// **Note**: Consider using `AnalyticsManager.createExperiment()` instead, which creates
+    /// and tracks the experiment atomically, preventing sync issues.
     ///
     /// - If `variant` is provided: Uses that variant and **persists it** for future sessions
-    /// - If `variant` is nil: Randomly assigns and persists variant (**even in DEBUG builds**)
+    /// - If `variant` is nil: Randomly assigns and persists variant to UserDefaults
     ///
-    /// - Warning: Unlike `init(name:)`, this initializer does NOT force `.change` in DEBUG builds when variant is nil.
-    ///   If you want automatic DEBUG behavior, use `init(name:)` instead.
-    ///
-    /// - Note: When you provide an explicit variant, it's saved to UserDefaults. Future instances of this
-    ///   experiment (even with `init(name:)`) will use the saved variant until you clear UserDefaults.
+    /// - Note: When you provide an explicit variant, it's saved to UserDefaults. Future instances
+    ///   of this experiment will use the saved variant until you clear UserDefaults or reinstall the app.
     ///
     /// - Parameters:
     ///   - name: The experiment name
