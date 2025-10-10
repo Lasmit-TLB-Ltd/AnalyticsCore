@@ -31,19 +31,21 @@ public class AnalyticsManager {
     }
 
     private static func setOSVersionProperty() {
-        #if os(iOS)
-        let version = UIDevice.current.systemVersion
-        let majorVersion = Int(version.split(separator: ".").first ?? "0") ?? 0
-        if majorVersion > 0 {
-            setUserProperty(SystemUserProperty.osVersion(majorVersion))
+        DispatchQueue.main.async {
+#if os(iOS)
+            let version = UIDevice.current.systemVersion
+            let majorVersion = Int(version.split(separator: ".").first ?? "0") ?? 0
+            if majorVersion > 0 {
+                setUserProperty(SystemUserProperty.osVersion(majorVersion))
+            }
+#elseif os(watchOS)
+            let version = WKInterfaceDevice.current().systemVersion
+            let majorVersion = Int(version.split(separator: ".").first ?? "0") ?? 0
+            if majorVersion > 0 {
+                setUserProperty(SystemUserProperty.osVersion(majorVersion))
+            }
+#endif
         }
-        #elseif os(watchOS)
-        let version = WKInterfaceDevice.current().systemVersion
-        let majorVersion = Int(version.split(separator: ".").first ?? "0") ?? 0
-        if majorVersion > 0 {
-            setUserProperty(SystemUserProperty.osVersion(majorVersion))
-        }
-        #endif
     }
     
     public static func logEvent(_ event: AnalyticsEvent) {
