@@ -17,11 +17,12 @@ public class AnalyticsManager {
     
     nonisolated(unsafe) private static var amplitude: Amplitude?
     
-    public static func setup(apiKey: String, uniqueId: String? = nil) {
+    public static func setup(apiKey: String, uniqueId: String? = nil, runInDebugMode: Bool = false) {
         Self.amplitude = Amplitude(configuration: Configuration(
             apiKey: apiKey,
+            logLevel: runInDebugMode ? .DEBUG : .WARN, // Warn is the default
             serverZone: .EU,
-            autocapture: .screenViews
+            autocapture: [],
         ))
 
         setOSVersionProperty()
