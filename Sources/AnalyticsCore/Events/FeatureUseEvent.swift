@@ -6,7 +6,7 @@ public struct FeatureUseEvent: AnalyticsEvent {
     public var properties: [String : Any]?
     
     public init(title: String, properties: [String : Any]? = nil) {
-        self.title = title
+        self.title = "[Feature] " + title
         self.properties = properties
     }
 }
