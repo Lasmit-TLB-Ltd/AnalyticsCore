@@ -1,6 +1,6 @@
 import Foundation
 
-struct Experiment: AnalyticsEvent {
+struct ExperimentEvent: AnalyticsEvent {
     let name: String
     let properties: [String: Any]?
 

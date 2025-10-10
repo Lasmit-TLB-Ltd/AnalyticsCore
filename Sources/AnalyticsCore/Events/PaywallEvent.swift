@@ -1,4 +1,4 @@
-public struct Paywall: AnalyticsEvent {
+public struct PaywallEvent: AnalyticsEvent {
 
     public enum PurchaseEventType {
         case showSalesScreen

@@ -7,7 +7,7 @@
 //
 import Foundation
 
-public struct Onboarding: AnalyticsEvent {
+public struct OnboardingEvent: AnalyticsEvent {
 
     public var properties: [String : Any]? { return nil }
 

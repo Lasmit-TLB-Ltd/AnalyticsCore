@@ -17,7 +17,7 @@ public class AnalyticsManager {
     
     nonisolated(unsafe) private static var amplitude: Amplitude?
     
-    public static func setup(apiKey: String) {
+    public static func setup(apiKey: String, uniqueId: String? = nil) {
         Self.amplitude = Amplitude(configuration: Configuration(
             apiKey: apiKey,
             serverZone: .EU,
@@ -25,6 +25,9 @@ public class AnalyticsManager {
         ))
 
         setOSVersionProperty()
+        if let uniqueId {
+            identify(userId: uniqueId)
+        }
     }
 
     private static func setOSVersionProperty() {
@@ -69,7 +72,7 @@ public class AnalyticsManager {
         )
 
 #if !os(watchOS)
-        if let paywallEvent = event as? Paywall, paywallEvent.source == nil {
+        if let paywallEvent = event as? PaywallEvent, paywallEvent.source == nil {
             DDLogWarn("📍 Unknown Paywall Event Source")
         }
 #endif
@@ -99,7 +102,7 @@ public class AnalyticsManager {
 
     public static func startExperiment(name: String, variant: String) {
         // Track the experiment event
-        logEvent(Experiment(name: name, variant: variant))
+        logEvent(ExperimentEvent(name: name, variant: variant))
 
         // Set the experiment as a user property
         setUserProperty(ExperimentUserProperty(name: name, variant: variant))
