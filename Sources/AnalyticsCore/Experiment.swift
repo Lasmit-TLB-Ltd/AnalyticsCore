@@ -76,6 +76,7 @@ public struct Experiment<Name: RawRepresentable> where Name.RawValue == String {
 
             let newGroup = Variant.random
             UserDefaults.standard.set(newGroup.rawValue, forKey: defaultsKey)
+            UserDefaults.standard.synchronize()
             return newGroup
         }
     }
@@ -112,6 +113,7 @@ public struct Experiment<Name: RawRepresentable> where Name.RawValue == String {
             // Persist the manually set variant so future instances use it
             let defaultsKey = "Experiment_" + name.rawValue
             UserDefaults.standard.set(variant.rawValue, forKey: defaultsKey)
+            UserDefaults.standard.synchronize()
         } else {
             self.variant = .assigned(for: name)
         }

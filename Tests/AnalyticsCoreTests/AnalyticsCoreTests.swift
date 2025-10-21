@@ -2,6 +2,12 @@ import Testing
 import Foundation
 @testable import AnalyticsCore
 
+/// Helper to clear UserDefaults and ensure synchronization for tests
+func clearExperimentDefaults(_ key: String) {
+    UserDefaults.standard.removeObject(forKey: key)
+    UserDefaults.standard.synchronize()
+}
+
 @Test func testOSVersionUserProperty() async throws {
     let property = SystemUserProperty.osVersion(18)
 
@@ -26,7 +32,7 @@ enum TestExperiments: String {
 
 @Test func testExperimentBasicCreation() async throws {
     // Clear any previous test data
-    UserDefaults.standard.removeObject(forKey: "Experiment_testFeature")
+    clearExperimentDefaults("Experiment_testFeature")
 
     let experiment = Experiment(name: TestExperiments.testFeature)
 
@@ -36,7 +42,7 @@ enum TestExperiments: String {
 
 @Test func testExperimentVariantPersistence() async throws {
     // Clear any previous test data
-    UserDefaults.standard.removeObject(forKey: "Experiment_anotherFeature")
+    clearExperimentDefaults("Experiment_anotherFeature")
 
     // Create first experiment instance
     let experiment1 = Experiment(name: TestExperiments.anotherFeature)
@@ -52,7 +58,7 @@ enum TestExperiments: String {
 
 @Test func testExperimentManualVariantControl() async throws {
     // Clear any previous test data
-    UserDefaults.standard.removeObject(forKey: "Experiment_thirdFeature")
+    clearExperimentDefaults("Experiment_thirdFeature")
 
     // Create experiment with explicit control variant
     let experiment = Experiment(name: TestExperiments.thirdFeature, variant: .control)
@@ -63,7 +69,7 @@ enum TestExperiments: String {
 
 @Test func testExperimentManualVariantChange() async throws {
     // Clear any previous test data
-    UserDefaults.standard.removeObject(forKey: "Experiment_thirdFeature")
+    clearExperimentDefaults("Experiment_thirdFeature")
 
     // Create experiment with explicit change variant
     let experiment = Experiment(name: TestExperiments.thirdFeature, variant: .change)
@@ -74,7 +80,7 @@ enum TestExperiments: String {
 
 @Test func testExperimentManualVariantPersists() async throws {
     // Clear any previous test data
-    UserDefaults.standard.removeObject(forKey: "Experiment_thirdFeature")
+    clearExperimentDefaults("Experiment_thirdFeature")
 
     // Set explicit variant
     _ = Experiment(name: TestExperiments.thirdFeature, variant: .control)
@@ -102,8 +108,8 @@ enum TestExperiments: String {
 
 @Test func testMultipleExperimentsIndependent() async throws {
     // Clear any previous test data
-    UserDefaults.standard.removeObject(forKey: "Experiment_testFeature")
-    UserDefaults.standard.removeObject(forKey: "Experiment_anotherFeature")
+    clearExperimentDefaults("Experiment_testFeature")
+    clearExperimentDefaults("Experiment_anotherFeature")
 
     // Create two different experiments
     let experiment1 = Experiment(name: TestExperiments.testFeature, variant: .control)
