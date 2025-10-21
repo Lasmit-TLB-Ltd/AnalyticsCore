@@ -31,18 +31,24 @@ public class AnalyticsManager {
         }
     }
 
+    /// Parses the major version number from a version string
+    /// - Parameter versionString: A version string like "17.5.1" or "9.0"
+    /// - Returns: The major version number, or nil if parsing fails or version is 0
+    static func parseMajorVersion(from versionString: String) -> Int? {
+        let majorVersion = Int(versionString.split(separator: ".").first ?? "0") ?? 0
+        return majorVersion > 0 ? majorVersion : nil
+    }
+
     private static func setOSVersionProperty() {
         DispatchQueue.main.async {
 #if os(iOS)
             let version = UIDevice.current.systemVersion
-            let majorVersion = Int(version.split(separator: ".").first ?? "0") ?? 0
-            if majorVersion > 0 {
+            if let majorVersion = parseMajorVersion(from: version) {
                 setUserProperty(SystemUserProperty.osVersion(majorVersion))
             }
 #elseif os(watchOS)
             let version = WKInterfaceDevice.current().systemVersion
-            let majorVersion = Int(version.split(separator: ".").first ?? "0") ?? 0
-            if majorVersion > 0 {
+            if let majorVersion = parseMajorVersion(from: version) {
                 setUserProperty(SystemUserProperty.osVersion(majorVersion))
             }
 #endif
