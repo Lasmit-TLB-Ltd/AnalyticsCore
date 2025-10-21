@@ -101,6 +101,7 @@ public class AnalyticsManager {
         let identify = Identify()
         identify.set(property: property.name, value: property.value)
         amplitude.identify(identify: identify)
+        DDLogInfo("[📍] \(property.name) set to: \(property.value)")
     }
 
     public static func startExperiment(name: String, variant: String) {
