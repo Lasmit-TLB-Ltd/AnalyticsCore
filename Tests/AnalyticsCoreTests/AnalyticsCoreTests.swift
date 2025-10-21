@@ -22,6 +22,62 @@ func clearExperimentDefaults(_ key: String) {
     #expect(property.value as? Int == 17)
 }
 
+// MARK: - Version Parsing Tests
+
+@Test func testParseMajorVersionStandard() async throws {
+    #expect(AnalyticsManager.parseMajorVersion(from: "18.5") == 18)
+    #expect(AnalyticsManager.parseMajorVersion(from: "17.6.1") == 17)
+    #expect(AnalyticsManager.parseMajorVersion(from: "16.7.12") == 16)
+}
+
+@Test func testParseMajorVersioniOS26Versions() async throws {
+    #expect(AnalyticsManager.parseMajorVersion(from: "26.0.1") == 26)
+    #expect(AnalyticsManager.parseMajorVersion(from: "26.1") == 26)
+    #expect(AnalyticsManager.parseMajorVersion(from: "26.0") == 26)
+}
+
+@Test func testParseMajorVersioniOS18Versions() async throws {
+    #expect(AnalyticsManager.parseMajorVersion(from: "18.6.2") == 18)
+    #expect(AnalyticsManager.parseMajorVersion(from: "18.7.1") == 18)
+    #expect(AnalyticsManager.parseMajorVersion(from: "18.6") == 18)
+    #expect(AnalyticsManager.parseMajorVersion(from: "18.7") == 18)
+    #expect(AnalyticsManager.parseMajorVersion(from: "18.1.1") == 18)
+    #expect(AnalyticsManager.parseMajorVersion(from: "18.4.1") == 18)
+    #expect(AnalyticsManager.parseMajorVersion(from: "18.3.2") == 18)
+    #expect(AnalyticsManager.parseMajorVersion(from: "18.6.1") == 18)
+    #expect(AnalyticsManager.parseMajorVersion(from: "18.1") == 18)
+    #expect(AnalyticsManager.parseMajorVersion(from: "18.3.1") == 18)
+}
+
+@Test func testParseMajorVersionNeverReturnsZero() async throws {
+    // Test all provided version strings - none should return nil or 0
+    let versions = [
+        "26.0.1", "18.6.2", "18.7.1", "26.1", "26.0",
+        "18.5", "18.6", "18.7", "17.6.1", "16.7.12",
+        "18.1.1", "18.4.1", "18.3.2", "18.6.1", "18.1", "18.3.1"
+    ]
+
+    for version in versions {
+        let result = AnalyticsManager.parseMajorVersion(from: version)
+        #expect(result != nil, "Version \(version) should not return nil")
+        #expect(result! > 0, "Version \(version) should return a positive number, got \(result!)")
+    }
+}
+
+@Test func testParseMajorVersionEdgeCases() async throws {
+    // Empty string should return nil
+    #expect(AnalyticsManager.parseMajorVersion(from: "") == nil)
+
+    // Invalid string should return nil
+    #expect(AnalyticsManager.parseMajorVersion(from: "invalid") == nil)
+
+    // Zero version should return nil
+    #expect(AnalyticsManager.parseMajorVersion(from: "0.0.0") == nil)
+
+    // Single digit should work
+    #expect(AnalyticsManager.parseMajorVersion(from: "9") == 9)
+}
+
 // MARK: - Experiment Tests
 
 enum TestExperiments: String {
