@@ -40,19 +40,21 @@ public class AnalyticsManager {
     }
 
     private static func setOSVersionProperty() {
-        DispatchQueue.main.async {
 #if os(iOS)
-            let version = UIDevice.current.systemVersion
-            if let majorVersion = parseMajorVersion(from: version) {
-                setUserProperty(SystemUserProperty.osVersion(majorVersion))
-            }
-#elseif os(watchOS)
-            let version = WKInterfaceDevice.current().systemVersion
-            if let majorVersion = parseMajorVersion(from: version) {
-                setUserProperty(SystemUserProperty.osVersion(majorVersion))
-            }
-#endif
+        let version = UIDevice.current.systemVersion
+        if let majorVersion = parseMajorVersion(from: version) {
+            setUserProperty(SystemUserProperty.osVersion(majorVersion))
+        } else {
+            DDLogError("Could not extract major version from \(version)")
         }
+#elseif os(watchOS)
+        let version = WKInterfaceDevice.current().systemVersion
+        if let majorVersion = parseMajorVersion(from: version) {
+            setUserProperty(SystemUserProperty.osVersion(majorVersion))
+        } else {
+            DDLogError("Could not extract major version from \(version)")
+        }
+#endif
     }
     
     public static func logEvent(_ event: AnalyticsEvent) {
