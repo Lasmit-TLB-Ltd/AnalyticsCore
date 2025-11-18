@@ -134,11 +134,8 @@ public class AnalyticsManager {
     }
 
     public static func startExperiment(name: String, variant: String) {
-        // Track the experiment event
         logEvent(ExperimentEvent(name: name, variant: variant))
-
-        // Set the experiment as a user property
-        setUserProperty(ExperimentUserProperty(name: name, variant: variant))
+        Mixpanel.mainInstance().registerSuperProperties([name: variant])
     }
 
     /// Creates an experiment and automatically tracks it
