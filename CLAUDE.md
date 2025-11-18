@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 AnalyticsCore is a Swift Package Manager library that provides a simple, consistent way to track analytics across iOS and watchOS applications. It's designed to avoid analytics bloat by focusing on key business events (onboarding, paywall interactions, feature usage, and screen views) that move the needle while keeping complexity and costs down.
 
-The library wraps Amplitude as the analytics backend and uses CocoaLumberjack for logging.
+The library wraps ~~Amplitude~~ Mixpanel as the analytics backend and uses CocoaLumberjack for logging.
 
 ## Commands
 
@@ -29,7 +29,7 @@ swift test --filter <TestName>
 
 ### Core Components
 
-- **AnalyticsManager** (Sources/AnalyticsCore/AnalyticsManager.swift): Central singleton that manages Amplitude configuration and event tracking. Must be initialized with `setup(apiKey:)` before use. Configured for EU server zone with automatic screen view capture. Events are flushed immediately in DEBUG builds for testing.
+- **AnalyticsManager** (Sources/AnalyticsCore/AnalyticsManager.swift): Central singleton that manages analytics configuration and event tracking. Must be initialized with `setup(apiKey:)` before use. Configured for EU server zone with automatic screen view capture. Events are flushed immediately in DEBUG builds for testing.
 
 - **AnalyticsEvent Protocol** (Sources/AnalyticsCore/Events/AnalyticsEvent.swift): All events conform to this protocol with `name` and `properties`. Also defines `AnalyticsUserProperty` protocol (note: there's a syntax error on line 6 - missing protocol name).
 
@@ -41,7 +41,7 @@ The library provides four canned event types in `Sources/AnalyticsCore/Events/`:
 
 2. **Onboarding** - Tracks onboarding progress with custom step names, formatted as `[Onboarding] {step}`.
 
-3. **ScreenView** - Simple screen view tracking (though Amplitude autocaptures these by default).
+3. **ScreenView** - Simple screen view tracking 
 
 4. **FeatureUse** - Public struct for tracking feature usage with title and optional properties. The only event type marked `public` for external use.
 

@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import Mixpanel
 @testable import AnalyticsCore
 
 /// Helper to clear UserDefaults and ensure synchronization for tests
@@ -174,4 +175,66 @@ enum TestExperiments: String {
     // They should maintain independent variants
     #expect(experiment1.variant == .control)
     #expect(experiment2.variant == .change)
+}
+
+// MARK: - Event Property Tests
+
+@Test func testEventPropertiesArePreserved() async throws {
+    // Create an event with various property types
+    let testProperties: [String: Any] = [
+        "string_prop": "test_value",
+        "int_prop": 42,
+        "bool_prop": true,
+        "double_prop": 3.14
+    ]
+
+    let event = FeatureUseEvent(title: "test_feature", properties: testProperties)
+
+    // Verify properties are preserved
+    #expect(event.properties != nil)
+    #expect(event.properties?["string_prop"] as? String == "test_value")
+    #expect(event.properties?["int_prop"] as? Int == 42)
+    #expect(event.properties?["bool_prop"] as? Bool == true)
+    #expect(event.properties?["double_prop"] as? Double == 3.14)
+}
+
+@Test func testEventPropertiesCanBeNil() async throws {
+    let event = FeatureUseEvent(title: "test_feature", properties: nil)
+
+    #expect(event.properties == nil)
+}
+
+@Test func testEventPropertiesWithEmptyDictionary() async throws {
+    let event = FeatureUseEvent(title: "test_feature", properties: [:])
+
+    #expect(event.properties != nil)
+    #expect(event.properties?.isEmpty == true)
+}
+
+@Test func testPropertyConversionToMixpanelType() async throws {
+    // Test that common types can be converted to MixpanelType
+    let testProperties: [String: Any] = [
+        "string": "value",
+        "int": 123,
+        "double": 45.67,
+        "bool": true,
+        "date": Date(),
+        "url": URL(string: "https://example.com")!,
+        "array": ["a", "b", "c"],
+        "dict": ["key": "value"]
+    ]
+
+    // Simulate what AnalyticsManager does - convert [String: Any] to [String: MixpanelType]
+    let converted = testProperties.compactMapValues { $0 as? MixpanelType }
+
+    // All common types should convert successfully
+    #expect(converted.count == testProperties.count, "All properties should be convertible to MixpanelType")
+    #expect(converted["string"] as! String == "value")
+    #expect(converted["int"] as! Int == 123)
+    #expect(converted["double"] as! Double == 45.67)
+    #expect(converted["bool"] as! Bool == true)
+    #expect(converted["date"] != nil)
+    #expect(converted["url"] as! URL == URL(string: "https://example.com")!)
+    #expect(converted["array"] as! Array == ["a", "b", "c"])
+    #expect(converted["dict"] as! Dictionary == ["key": "value"])
 }

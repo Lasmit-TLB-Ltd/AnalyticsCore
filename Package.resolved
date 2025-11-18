@@ -1,33 +1,6 @@
 {
-  "originHash" : "0d6ff4e71db32698d5281c0c88f9233f418d2b27dd4a024f98a8b48d978b6a97",
+  "originHash" : "dc4b9f63095abdffc4f7265d3f83ce4bbe3e1eaaa3881ad3d6689e5466c41edf",
   "pins" : [
-    {
-      "identity" : "amplitude-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/amplitude/Amplitude-Swift",
-      "state" : {
-        "revision" : "a1c988bd093de855c71883d2d6ca232759dbd3df",
-        "version" : "1.15.1"
-      }
-    },
-    {
-      "identity" : "amplitudecore-swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/amplitude/AmplitudeCore-Swift.git",
-      "state" : {
-        "revision" : "dda4458213f3c83520bd730d2eaacca7e532f572",
-        "version" : "1.2.3"
-      }
-    },
-    {
-      "identity" : "analytics-connector-ios",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/amplitude/analytics-connector-ios.git",
-      "state" : {
-        "revision" : "4adbfe85486e6dcdcdca5fa9362097ffe5ec712b",
-        "version" : "1.3.1"
-      }
-    },
     {
       "identity" : "cocoalumberjack",
       "kind" : "remoteSourceControl",
@@ -35,6 +8,15 @@
       "state" : {
         "revision" : "a9ed4b6f9bdedce7d77046f43adfb8ce1fd54114",
         "version" : "3.9.0"
+      }
+    },
+    {
+      "identity" : "mixpanel-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mixpanel/mixpanel-swift",
+      "state" : {
+        "revision" : "cf569f790c0ec9e9f94f25e56b7ba5762198d34a",
+        "version" : "2.10.4"
       }
     },
     {

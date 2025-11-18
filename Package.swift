@@ -17,7 +17,7 @@ let package = Package(
             targets: ["AnalyticsCore"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/amplitude/Amplitude-Swift", from: "1.0.0"),
+        .package(url: "https://github.com/mixpanel/mixpanel-swift", from: "2.8.0"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.9.0"),
     ],
     targets: [
@@ -26,7 +26,7 @@ let package = Package(
         .target(
             name: "AnalyticsCore",
             dependencies: [
-                .product(name: "AmplitudeSwift", package: "Amplitude-Swift"),
+                .product(name: "Mixpanel", package: "mixpanel-swift"),
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ]
         ),

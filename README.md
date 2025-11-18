@@ -21,7 +21,7 @@ Initialize AnalyticsCore early in your app lifecycle (e.g., in your App struct o
 ```swift
 import AnalyticsCore
 
-AnalyticsManager.shared.setup(apiKey: "your-amplitude-api-key")
+AnalyticsManager.shared.setup(apiKey: "your-api-key")
 ```
 
 ### Tracking Events
@@ -82,8 +82,6 @@ AnalyticsManager.shared.track(
 )
 ```
 
-Note: Amplitude automatically captures screen views by default, so manual tracking may not be necessary.
-
 ### User Properties
 
 ```swift
@@ -97,8 +95,7 @@ AnalyticsManager.shared.setUserProperty(
 ## Configuration
 
 AnalyticsCore is configured for:
-- **EU server zone**: Data is sent to Amplitude's EU servers
-- **Automatic screen tracking**: Screen views are captured automatically by Amplitude
+- **EU server zone**: Data is sent to EU servers
 - **Debug mode**: Events are flushed immediately in DEBUG builds for easier testing
 - **Logging**: All events are logged with CocoaLumberjack using the 📍 emoji prefix
 

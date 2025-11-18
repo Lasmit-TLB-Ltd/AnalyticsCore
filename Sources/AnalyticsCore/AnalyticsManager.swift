@@ -1,4 +1,4 @@
-import AmplitudeSwift
+import Mixpanel
 import os
 import CocoaLumberjackSwift
 
@@ -14,18 +14,21 @@ import WatchKit
 /// The goal is to avoid analytics bloat and focus on things which move the needle.
 /// This keeps complexity and costs down.
 public class AnalyticsManager {
-    
-    nonisolated(unsafe) private static var amplitude: Amplitude?
-    
-    public static func setup(apiKey: String, uniqueId: String? = nil, runInDebugMode: Bool = false) {
-        Self.amplitude = Amplitude(configuration: Configuration(
-            apiKey: apiKey,
-            logLevel: runInDebugMode ? .DEBUG : .WARN, // Warn is the default
-            serverZone: .EU,
-            autocapture: [],
-        ))
 
-        setOSVersionProperty()
+    nonisolated(unsafe) private static var isInitialized = false
+
+    public static func setup(apiKey: String, uniqueId: String? = nil, runInDebugMode: Bool = false) {
+        
+        Mixpanel.initialize(token: apiKey)
+        Mixpanel.mainInstance().trackAutomaticEventsEnabled = false
+        Mixpanel.mainInstance().serverURL = "https://api-eu.mixpanel.com"
+        Mixpanel.mainInstance().loggingEnabled = runInDebugMode
+
+        isInitialized = true
+
+        DispatchQueue.main.async {
+            setOSVersionProperty()
+        }
         if let uniqueId {
             identify(userId: uniqueId)
         }
@@ -39,11 +42,12 @@ public class AnalyticsManager {
         return majorVersion > 0 ? majorVersion : nil
     }
 
-    private static func setOSVersionProperty() {
+    @MainActor private static func setOSVersionProperty() {
 #if os(iOS)
         let version = UIDevice.current.systemVersion
         if let majorVersion = parseMajorVersion(from: version) {
-            setUserProperty(SystemUserProperty.osVersion(majorVersion))
+            let property = SystemUserProperty.osVersion(majorVersion)
+            Mixpanel.mainInstance().registerSuperProperties([property.name: property.value as? MixpanelType])
         } else {
             DDLogError("Could not extract major version from \(version)")
         }
@@ -58,8 +62,9 @@ public class AnalyticsManager {
     }
     
     public static func logEvent(_ event: AnalyticsEvent) {
-        guard let amplitude else {
-            DDLogError("Amplitude not configured")
+        guard isInitialized else {
+            DDLogError("AnalyticsManager not initialized. Call setup() first.")
+            assertionFailure()
             return
         }
 
@@ -75,12 +80,24 @@ public class AnalyticsManager {
             DDLogInfo("📍 \(event.name) \(propertiesDescription)")
         }
 
-        let props = event.properties ?? [String: Any]()
+        // Convert [String: Any]? to [String: MixpanelType]?
+        var mixpanelProperties: Properties?
+        if let props = event.properties, !props.isEmpty {
+            var converted: [String: MixpanelType] = [:]
+            for (key, value) in props {
+                if let mixpanelValue = value as? MixpanelType {
+                    converted[key] = mixpanelValue
+                } else {
+                    let errorMessage = "📍 Property '\(key)' with value '\(value)' (type: \(type(of: value))) cannot be converted to MixpanelType and will be dropped"
+                    DDLogError("\(errorMessage)")
+                    assertionFailure(errorMessage)
+                }
+            }
+            mixpanelProperties = converted.isEmpty ? nil : converted
+        }
 
-        amplitude.track(
-            eventType: event.name,
-            eventProperties: props
-        )
+        Mixpanel.mainInstance().track(event: event.name,
+                                      properties: mixpanelProperties)
 
 #if !os(watchOS)
         if let paywallEvent = event as? PaywallEvent, paywallEvent.source == nil {
@@ -91,24 +108,28 @@ public class AnalyticsManager {
     }
     
     public static func identify(userId: String) {
-        guard let amplitude else {
-            DDLogError("Amplitude not configured")
+        guard isInitialized else {
+            DDLogError("AnalyticsManager not initialized. Call setup() first.")
+            assertionFailure()
             return
         }
 
-        amplitude.setUserId(userId: userId)
+        Mixpanel.mainInstance().identify(distinctId: userId);
         DDLogDebug("[📍] User identified: \(userId)")
     }
 
     public static func setUserProperty(_ property: AnalyticsUserProperty) {
-        guard let amplitude else {
-            DDLogError("Amplitude not configured")
+        guard isInitialized else {
+            DDLogError("AnalyticsManager not initialized. Call setup() first.")
+            assertionFailure()
             return
         }
 
-        let identify = Identify()
-        identify.set(property: property.name, value: property.value)
-        amplitude.identify(identify: identify)
+        guard let value = property.value as? any MixpanelType else {
+            DDLogError("Could not cast: \(property.value) to a MixpanelType")
+            return
+        }
+        Mixpanel.mainInstance().people.set(properties: [property.name: value])
         DDLogInfo("[📍] \(property.name) set to: \(property.value)")
     }
 
@@ -146,12 +167,7 @@ public class AnalyticsManager {
 
     private static func flush() {
 #if DEBUG
-        guard let amplitude else {
-            DDLogError("Amplitude not configured")
-            return
-        }
-        
-        amplitude.flush()
+        Mixpanel.mainInstance().flush()
 #endif
     }
 }
