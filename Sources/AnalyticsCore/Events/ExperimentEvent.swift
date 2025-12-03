@@ -6,6 +6,10 @@ struct ExperimentEvent: AnalyticsEvent {
 
     init(name: String, variant: String) {
         self.name = "[Experiment] \(name)"
-        self.properties = ["variant": variant]
+        self.properties = [
+            // use the experiment name as the property name so that it
+            // matches the property name of other events
+            name: variant
+        ]
     }
 }
