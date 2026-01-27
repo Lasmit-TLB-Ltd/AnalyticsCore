@@ -19,8 +19,7 @@ public class AnalyticsManager {
 
     public static func setup(apiKey: String, uniqueId: String? = nil, runInDebugMode: Bool = false) {
         
-        Mixpanel.initialize(token: apiKey)
-        Mixpanel.mainInstance().trackAutomaticEventsEnabled = false
+        Mixpanel.initialize(token: apiKey, trackAutomaticEvents: false)
         Mixpanel.mainInstance().serverURL = "https://api-eu.mixpanel.com"
         Mixpanel.mainInstance().loggingEnabled = runInDebugMode
 
