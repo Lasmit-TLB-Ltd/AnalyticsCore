@@ -18,8 +18,13 @@ public class AnalyticsManager {
     nonisolated(unsafe) private static var isInitialized = false
 
     public static func setup(apiKey: String, uniqueId: String? = nil, runInDebugMode: Bool = false) {
-        
+
+#if os(macOS) || os(watchOS)
         Mixpanel.initialize(token: apiKey)
+        Mixpanel.mainInstance().trackAutomaticEventsEnabled = false
+#else
+        Mixpanel.initialize(token: apiKey, trackAutomaticEvents: false)
+#endif
         Mixpanel.mainInstance().serverURL = "https://api-eu.mixpanel.com"
         Mixpanel.mainInstance().loggingEnabled = runInDebugMode
 

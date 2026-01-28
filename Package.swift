@@ -17,7 +17,7 @@ let package = Package(
             targets: ["AnalyticsCore"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/mixpanel/mixpanel-swift", from: "4.0.0"),
+        .package(url: "https://github.com/mixpanel/mixpanel-swift", from: "5.0.0"),
         .package(url: "https://github.com/CocoaLumberjack/CocoaLumberjack", from: "3.9.0"),
     ],
     targets: [

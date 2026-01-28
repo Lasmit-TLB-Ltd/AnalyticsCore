@@ -1,10 +1,11 @@
-.PHONY: build test test-macos test-ios test-watchos clean help
+.PHONY: build test test-all test-macos test-ios test-watchos clean help
 
 # Default target
 help:
 	@echo "AnalyticsCore Targets:"
 	@echo "  make build         - Build the package"
 	@echo "  make test          - Run tests on macOS (default)"
+	@echo "  make test-all      - Run tests on all platforms (macOS, iOS, watchOS)"
 	@echo "  make test-macos    - Run tests on macOS"
 	@echo "  make test-ios      - Run tests on iOS Simulator"
 	@echo "  make test-watchos  - Run tests on watchOS Simulator"
@@ -18,6 +19,11 @@ build:
 
 # Run swift test (runs on macOS)
 test: test-macos
+
+# Run tests on all platforms
+test-all: test-macos test-ios test-watchos
+	@echo ""
+	@echo "✅ All platform tests complete!"
 
 # macOS tests (using swift test)
 test-macos:
