@@ -12,12 +12,26 @@ The library wraps ~~Amplitude~~ Mixpanel as the analytics backend and uses Cocoa
 
 ### Building
 ```bash
+make build
+# or
 swift build
 ```
 
 ### Running Tests
+
+Use the Makefile for convenient test execution across platforms:
+
 ```bash
-swift test
+# Run tests on macOS (fastest, default)
+make test
+
+# Run tests on specific platforms
+make test-macos    # macOS using swift test
+make test-ios      # iOS Simulator using xcodebuild
+make test-watchos  # watchOS Simulator using xcodebuild
+
+# Clean build artifacts
+make clean
 ```
 
 ### Running a Single Test

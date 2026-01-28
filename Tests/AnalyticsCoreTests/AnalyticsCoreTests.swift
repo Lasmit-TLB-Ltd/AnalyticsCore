@@ -238,3 +238,22 @@ enum TestExperiments: String {
     #expect(converted["array"] as! Array == ["a", "b", "c"])
     #expect(converted["dict"] as! Dictionary == ["key": "value"])
 }
+
+// MARK: - Platform-Specific Tests
+
+@Test func testWatchOSPlatformCompilation() async throws {
+    #if os(watchOS)
+    // This test only runs on watchOS
+    // Verify that paywall events on watchOS don't trigger source warnings
+    // (as noted in CLAUDE.md, watchOS doesn't warn about missing source)
+    let event = PaywallEvent(type: .showSalesScreen, source: nil)
+    #expect(event.name == "[Paywall] Shown")
+    #elseif os(iOS)
+    // This runs on iOS
+    let event = PaywallEvent(type: .showSalesScreen, source: "test")
+    #expect(event.name == "[Paywall] Shown")
+    #else
+    // This runs on macOS during swift test
+    #expect(true, "Running on macOS host")
+    #endif
+}

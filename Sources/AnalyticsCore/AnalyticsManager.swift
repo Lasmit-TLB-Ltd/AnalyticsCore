@@ -2,9 +2,9 @@ import Mixpanel
 import os
 import CocoaLumberjackSwift
 
-#if canImport(UIKit)
+#if os(iOS) || os(tvOS) || os(visionOS)
 import UIKit
-#elseif canImport(WatchKit)
+#elseif os(watchOS)
 import WatchKit
 #endif
 
@@ -19,7 +19,7 @@ public class AnalyticsManager {
 
     public static func setup(apiKey: String, uniqueId: String? = nil, runInDebugMode: Bool = false) {
         
-        Mixpanel.initialize(token: apiKey, trackAutomaticEvents: false)
+        Mixpanel.initialize(token: apiKey)
         Mixpanel.mainInstance().serverURL = "https://api-eu.mixpanel.com"
         Mixpanel.mainInstance().loggingEnabled = runInDebugMode
 
