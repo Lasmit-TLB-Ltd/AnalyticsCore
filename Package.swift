@@ -27,7 +27,8 @@ let package = Package(
             name: "AnalyticsCore",
             dependencies: [
                 .product(name: "Mixpanel", package: "mixpanel-swift"),
-                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
+                .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
+                .product(name: "CocoaLumberjack", package: "CocoaLumberjack")
             ]
         ),
         .testTarget(
