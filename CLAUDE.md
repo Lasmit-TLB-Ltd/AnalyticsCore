@@ -43,13 +43,13 @@ swift test --filter <TestName>
 
 ### Core Components
 
-- **AnalyticsManager** (Sources/AnalyticsCore/AnalyticsManager.swift): Central singleton that manages analytics configuration and event tracking. Must be initialized with `setup(apiKey:)` before use. Configured for EU server zone with automatic screen view capture. Events are flushed immediately in DEBUG builds for testing.
+- **AnalyticsManager** (Sources/AnalyticsCore/AnalyticsManager.swift): Central singleton that manages analytics configuration and event tracking. Must be initialized with `setup(apiKey:)` before use. Configured for EU server zone with automatic screen view capture. On iOS, it also automatically logs a `[Screenshot]` event whenever the user takes a screenshot (opt out with `setup(trackScreenshots: false)`). Events are flushed immediately in DEBUG builds for testing.
 
 - **AnalyticsEvent Protocol** (Sources/AnalyticsCore/Events/AnalyticsEvent.swift): All events conform to this protocol with `name` and `properties`. Also defines `AnalyticsUserProperty` protocol (note: there's a syntax error on line 6 - missing protocol name).
 
 ### Event Types
 
-The library provides four canned event types in `Sources/AnalyticsCore/Events/`:
+The library provides these canned event types in `Sources/AnalyticsCore/Events/`:
 
 1. **Paywall** - Tracks subscription/purchase flow (shown, dismissed, purchase started/completed, restore). Requires `source` parameter; logs warning if missing on non-watchOS platforms. Supports `period` property for completed purchases.
 
@@ -58,6 +58,8 @@ The library provides four canned event types in `Sources/AnalyticsCore/Events/`:
 3. **ScreenView** - Simple screen view tracking 
 
 4. **FeatureUse** - Public struct for tracking feature usage with title and optional properties. The only event type marked `public` for external use.
+
+5. **Screenshot** - Logged automatically on iOS when the user takes a screenshot (via `UIApplication.userDidTakeScreenshotNotification`). Named `[Screenshot]` with no properties. There is no public screenshot-detection API on watchOS, so this is iOS-only.
 
 ### Platform Support
 
@@ -70,4 +72,5 @@ The library provides four canned event types in `Sources/AnalyticsCore/Events/`:
 - Debug builds flush events immediately for testing; production builds batch
 - CocoaLumberjack logs all events with 📍 emoji for easy filtering
 - Paywall events without a source trigger a warning (⚠️) on iOS but not watchOS
+- Automatic screenshot tracking is iOS-only and can be disabled via `setup(trackScreenshots:)`; watchOS has no public screenshot-detection API
 - Most event structs are internal; only `FeatureUse` and `AnalyticsUserProperty` are public

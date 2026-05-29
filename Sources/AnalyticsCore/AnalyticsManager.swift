@@ -16,8 +16,11 @@ import WatchKit
 public class AnalyticsManager {
 
     nonisolated(unsafe) private static var isInitialized = false
+#if os(iOS)
+    nonisolated(unsafe) private static var screenshotObserver: NSObjectProtocol?
+#endif
 
-    public static func setup(apiKey: String, uniqueId: String? = nil, runInDebugMode: Bool = false) {
+    public static func setup(apiKey: String, uniqueId: String? = nil, runInDebugMode: Bool = false, trackScreenshots: Bool = true) {
 
 #if os(macOS) || os(watchOS)
         Mixpanel.initialize(token: apiKey)
@@ -29,6 +32,12 @@ public class AnalyticsManager {
         Mixpanel.mainInstance().loggingEnabled = runInDebugMode
 
         isInitialized = true
+
+#if os(iOS)
+        if trackScreenshots {
+            startScreenshotObservation()
+        }
+#endif
 
         DispatchQueue.main.async {
             setOSVersionProperty()
@@ -165,6 +174,22 @@ public class AnalyticsManager {
         startExperiment(name: experiment.name.rawValue, variant: experiment.variant.rawValue)
         return experiment
     }
+
+#if os(iOS)
+    /// Observes the system screenshot notification and logs a `ScreenshotEvent`
+    /// tagged with the most recently tracked screen. iOS only — there is no
+    /// public screenshot-detection API on watchOS.
+    private static func startScreenshotObservation() {
+        guard screenshotObserver == nil else { return }
+        screenshotObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.userDidTakeScreenshotNotification,
+            object: nil,
+            queue: .main
+        ) { _ in
+            logEvent(ScreenshotEvent())
+        }
+    }
+#endif
 
     private static func flush() {
 #if DEBUG
