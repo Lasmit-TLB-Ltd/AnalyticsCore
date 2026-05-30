@@ -257,3 +257,15 @@ enum TestExperiments: String {
     #expect(true, "Running on macOS host")
     #endif
 }
+
+// MARK: - Screenshot Event Tests
+
+@Test func testScreenshotEventName() async throws {
+    let event = ScreenshotEvent()
+    #expect(event.name == "[Screenshot]")
+}
+
+@Test func testScreenshotEventHasNoProperties() async throws {
+    let event = ScreenshotEvent()
+    #expect(event.properties == nil)
+}
