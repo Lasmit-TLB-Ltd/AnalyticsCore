@@ -12,6 +12,10 @@ public struct PaywallEvent: AnalyticsEvent {
     public var source: String?
     public var period: String?
 
+    /// The RevenueCat offering the paywall was shown from, when the app runs more than one.
+    /// Lets a promotional paywall's funnel be separated from the standard one in Mixpanel.
+    public var offering: String?
+
     public var name: String {
         let prefix = "[Paywall] "
         var suffix: String
@@ -35,12 +39,17 @@ public struct PaywallEvent: AnalyticsEvent {
             }
         }
 
+        if let offering {
+            props["offering"] = offering
+        }
+
         return props
     }
 
-    public init(type: PurchaseEventType, source: String? = nil, period: String? = nil) {
+    public init(type: PurchaseEventType, source: String? = nil, period: String? = nil, offering: String? = nil) {
         self.type = type
         self.source = source
         self.period = period
+        self.offering = offering
     }
 }

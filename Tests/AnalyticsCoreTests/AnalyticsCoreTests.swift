@@ -258,6 +258,28 @@ enum TestExperiments: String {
     #endif
 }
 
+// MARK: - Paywall Event Tests
+
+@Test func testPaywallEventOmitsOfferingWhenNotSet() async throws {
+    let event = PaywallEvent(type: .showSalesScreen, source: "Settings")
+
+    #expect(event.properties?["offering"] == nil)
+    #expect(event.properties?["source"] as? String == "Settings")
+}
+
+@Test func testPaywallEventIncludesOfferingWhenSet() async throws {
+    let event = PaywallEvent(type: .showSalesScreen, source: "Settings", offering: "onboarding_promotion")
+
+    #expect(event.properties?["offering"] as? String == "onboarding_promotion")
+}
+
+@Test func testPaywallEventCarriesOfferingOnPurchaseEvents() async throws {
+    let event = PaywallEvent(type: .purchaseCompleted, source: "Settings", period: "year", offering: "onboarding_promotion")
+
+    #expect(event.properties?["offering"] as? String == "onboarding_promotion")
+    #expect(event.properties?["period"] as? String == "year")
+}
+
 // MARK: - Screenshot Event Tests
 
 @Test func testScreenshotEventName() async throws {
