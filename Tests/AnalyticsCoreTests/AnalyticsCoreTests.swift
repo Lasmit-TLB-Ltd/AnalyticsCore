@@ -280,6 +280,16 @@ enum TestExperiments: String {
     #expect(event.properties?["period"] as? String == "year")
 }
 
+@Test func testPaywallEventCancelledCarriesPeriodAndExtra() async throws {
+    let event = PaywallEvent(type: .purchaseCancelled, source: "Onboarding", period: "year", extra: ["via": "button", "trial_offered": true])
+
+    #expect(event.name == "[Paywall] Purchase Cancelled")
+    #expect(event.properties?["period"] as? String == "year")
+    #expect(event.properties?["via"] as? String == "button")
+    #expect(event.properties?["trial_offered"] as? Bool == true)
+    #expect(event.properties?["source"] as? String == "Onboarding")
+}
+
 // MARK: - Screenshot Event Tests
 
 @Test func testScreenshotEventName() async throws {
