@@ -20,7 +20,7 @@ public class AnalyticsManager {
     nonisolated(unsafe) private static var screenshotObserver: NSObjectProtocol?
 #endif
 
-    public static func setup(apiKey: String, uniqueId: String? = nil, runInDebugMode: Bool = false, trackScreenshots: Bool = true) {
+    public static func setup(apiKey: String, uniqueId: String? = nil, runInDebugMode: Bool = false, trackScreenshots: Bool = true, trackOnSimulator: Bool = false) {
 
 #if os(macOS) || os(watchOS)
         Mixpanel.initialize(
@@ -37,6 +37,17 @@ public class AnalyticsManager {
 #endif
         Mixpanel.mainInstance().serverURL = "https://api-eu.mixpanel.com"
         Mixpanel.mainInstance().loggingEnabled = runInDebugMode
+
+#if targetEnvironment(simulator)
+        // Simulator builds send nothing unless asked. The SDK persists the opt-out and
+        // drops track, identify, people and flush itself. (PGS-1223)
+        let mixpanel = Mixpanel.mainInstance()
+        if trackOnSimulator, mixpanel.hasOptedOutTracking() {
+            mixpanel.optInTracking() // sends one $opt_in; the price of flipping the flag
+        } else if !trackOnSimulator, !mixpanel.hasOptedOutTracking() {
+            mixpanel.optOutTracking()
+        }
+#endif
 
         isInitialized = true
 

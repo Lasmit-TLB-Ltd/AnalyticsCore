@@ -301,3 +301,15 @@ enum TestExperiments: String {
     let event = ScreenshotEvent()
     #expect(event.properties == nil)
 }
+
+// MARK: - Simulator Opt-Out Tests
+
+@Test func testSetupOptsOutOnSimulatorOnly() async throws {
+    AnalyticsManager.setup(apiKey: "test", trackScreenshots: false)
+    try await Task.sleep(for: .milliseconds(500)) // optOutTracking sets the status on the tracking queue
+#if targetEnvironment(simulator)
+    #expect(Mixpanel.mainInstance().hasOptedOutTracking())
+#else
+    #expect(!Mixpanel.mainInstance().hasOptedOutTracking())
+#endif
+}

@@ -72,5 +72,6 @@ The library provides these canned event types in `Sources/AnalyticsCore/Events/`
 - Debug builds flush events immediately for testing; production builds batch
 - CocoaLumberjack logs all events with 📍 emoji for easy filtering
 - Paywall events without a source trigger a warning (⚠️) on iOS but not watchOS
+- Simulator builds opt out of Mixpanel tracking (persisted by the SDK) unless `setup(trackOnSimulator: true)`
 - Automatic screenshot tracking is iOS-only and can be disabled via `setup(trackScreenshots:)`; watchOS has no public screenshot-detection API
 - Most event structs are internal; only `FeatureUse` and `AnalyticsUserProperty` are public

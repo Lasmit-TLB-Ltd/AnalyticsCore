@@ -24,6 +24,8 @@ import AnalyticsCore
 AnalyticsManager.shared.setup(apiKey: "your-api-key")
 ```
 
+Simulator builds send nothing to Mixpanel unless you pass `trackOnSimulator: true`. The opt-out persists in the simulator, so flipping the flag back on sends one `$opt_in`.
+
 ### Tracking Events
 
 #### Feature Usage
