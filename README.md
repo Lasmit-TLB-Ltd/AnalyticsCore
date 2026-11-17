@@ -26,6 +26,10 @@ AnalyticsManager.shared.setup(apiKey: "your-api-key")
 
 Simulator builds send nothing to Mixpanel unless you pass `trackOnSimulator: true`. The opt-out persists in the simulator, so flipping the flag back on sends one `$opt_in`.
 
+### Apple Ads Attribution
+
+Automatic: `identify` also records the install's Apple Ads attribution. The first time Apple answers, it saves `apple_ads_attributed`, `apple_ads_campaign_id`, `apple_ads_ad_group_id`, `apple_ads_keyword_id`, `apple_ads_claim_type` and `apple_ads_conversion_type` user properties, then never asks again. A network error or a 500 tries again on the next `identify`. iOS and macOS only; no ATT prompt needed, but check the app's App Privacy answers cover ad attribution.
+
 ### Tracking Events
 
 #### Feature Usage

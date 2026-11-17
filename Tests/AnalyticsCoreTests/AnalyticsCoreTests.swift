@@ -313,3 +313,30 @@ enum TestExperiments: String {
     #expect(!Mixpanel.mainInstance().hasOptedOutTracking())
 #endif
 }
+
+// MARK: - Apple Ads Attribution Tests
+
+private func appleAdsProperties(_ json: String) throws -> [String: String] {
+    let payload = try JSONDecoder().decode(AppleAdsPayload.self, from: Data(json.utf8))
+    return payload.properties.mapValues { "\($0)" }
+}
+
+@Test func testAppleAdsTestPayloadGivesSixProperties() throws {
+    let json = #"{"attribution":true,"orgId":1234567890,"campaignId":1234567890,"conversionType":"Download","clickDate":"2020-04-08T17:17Z","claimType":"Click","adGroupId":1234567890,"countryOrRegion":"US","keywordId":123222,"adId":542317136,"supplyPlacement":"APPSTORE_SEARCH_RESULTS"}"#
+    let payload = try JSONDecoder().decode(AppleAdsPayload.self, from: Data(json.utf8))
+    #expect(payload.properties["apple_ads_attributed"] as? Bool == true)
+    #expect(try appleAdsProperties(json) == [
+        "apple_ads_attributed": "true",
+        "apple_ads_campaign_id": "1234567890",
+        "apple_ads_ad_group_id": "1234567890",
+        "apple_ads_keyword_id": "123222",
+        "apple_ads_claim_type": "Click",
+        "apple_ads_conversion_type": "Download",
+    ])
+}
+
+@Test func testAppleAdsUnattributedGivesOnlyAttributedFalse() throws {
+    let payload = try JSONDecoder().decode(AppleAdsPayload.self, from: Data(#"{"attribution":false}"#.utf8))
+    #expect(payload.properties.count == 1)
+    #expect(payload.properties["apple_ads_attributed"] as? Bool == false)
+}
