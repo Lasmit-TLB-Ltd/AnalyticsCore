@@ -73,5 +73,6 @@ The library provides these canned event types in `Sources/AnalyticsCore/Events/`
 - CocoaLumberjack logs all events with 📍 emoji for easy filtering
 - Paywall events without a source trigger a warning (⚠️) on iOS but not watchOS
 - Simulator builds opt out of Mixpanel tracking (persisted by the SDK) unless `setup(trackOnSimulator: true)`
+- `recordAppleAdsAttribution()` (Sources/AnalyticsCore/AppleAdsAttribution.swift, iOS/macOS only) posts the AdServices token to Apple once per install and saves the answer as `apple_ads_*` user properties; apps call it after `identify`
 - Automatic screenshot tracking is iOS-only and can be disabled via `setup(trackScreenshots:)`; watchOS has no public screenshot-detection API
 - Most event structs are internal; only `FeatureUse` and `AnalyticsUserProperty` are public
