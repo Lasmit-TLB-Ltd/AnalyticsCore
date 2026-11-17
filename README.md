@@ -28,13 +28,7 @@ Simulator builds send nothing to Mixpanel unless you pass `trackOnSimulator: tru
 
 ### Apple Ads Attribution
 
-Call `recordAppleAdsAttribution()` once per launch, after `identify`:
-
-```swift
-AnalyticsManager.recordAppleAdsAttribution()
-```
-
-The first time Apple answers, it saves the install's Apple Ads attribution as `apple_ads_attributed`, `apple_ads_campaign_id`, `apple_ads_ad_group_id`, `apple_ads_keyword_id`, `apple_ads_claim_type` and `apple_ads_conversion_type` user properties, then never asks again. A network error or a 500 tries again next launch. iOS and macOS only; no ATT prompt needed.
+Automatic: `identify` also records the install's Apple Ads attribution. The first time Apple answers, it saves `apple_ads_attributed`, `apple_ads_campaign_id`, `apple_ads_ad_group_id`, `apple_ads_keyword_id`, `apple_ads_claim_type` and `apple_ads_conversion_type` user properties, then never asks again. A network error or a 500 tries again on the next `identify`. iOS and macOS only; no ATT prompt needed, but check the app's App Privacy answers cover ad attribution.
 
 ### Tracking Events
 

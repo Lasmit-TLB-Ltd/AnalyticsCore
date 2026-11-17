@@ -32,8 +32,8 @@ extension AnalyticsManager {
     private static let appleAdsRecordedKey = "AnalyticsCore.appleAdsAttributionRecorded"
 
     /// Saves the install's Apple Ads attribution as `apple_ads_*` user properties, once per install.
-    /// Call after `identify`, so the properties land on the identified profile.
-    public static func recordAppleAdsAttribution() {
+    /// `identify` calls it, so the properties land on the identified profile.
+    static func recordAppleAdsAttribution() {
         guard !UserDefaults.standard.bool(forKey: appleAdsRecordedKey) else { return }
         guard #available(iOS 15, macOS 12, *) else { return }
         Task.detached(priority: .utility) { await fetchAppleAdsAttribution() }
