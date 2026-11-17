@@ -148,7 +148,7 @@ public class AnalyticsManager {
         Mixpanel.mainInstance().identify(distinctId: userId);
         DDLogDebug("[📍] User identified: \(userId)")
 #if canImport(AdServices)
-        recordAppleAdsAttribution() // after identify, so it lands on this profile (PGS-1256)
+        recordAppleAdsAttribution()
 #endif
     }
 
