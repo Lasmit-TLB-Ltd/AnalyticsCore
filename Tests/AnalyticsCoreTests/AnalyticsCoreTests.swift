@@ -340,3 +340,14 @@ private func appleAdsProperties(_ json: String) throws -> [String: String] {
     #expect(payload.properties.count == 1)
     #expect(payload.properties["apple_ads_attributed"] as? Bool == false)
 }
+
+@Test func testAppleAdsStepOnlyFinalAnswersSetTheFlag() {
+    #expect(AppleAdsStep.after(status: 200, attempt: 1) == .done)
+    #expect(AppleAdsStep.after(status: 400, attempt: 1) == .done)
+    #expect(AppleAdsStep.after(status: 404, attempt: 1) == .retry)
+    #expect(AppleAdsStep.after(status: 404, attempt: 2) == .retry)
+    #expect(AppleAdsStep.after(status: 404, attempt: 3) == .done)
+    for (status, attempt) in [(500, 1), (503, 1), (429, 2), (403, 1)] {
+        #expect(AppleAdsStep.after(status: status, attempt: attempt) == .tryNextLaunch)
+    }
+}
